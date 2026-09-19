@@ -1,0 +1,1 @@
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS amount numeric(12,2) NOT NULL DEFAULT 0; ALTER TABLE applications ADD COLUMN IF NOT EXISTS currency text NOT NULL DEFAULT 'INR'; ALTER TABLE applications ADD COLUMN IF NOT EXISTS payment_order_id text;
