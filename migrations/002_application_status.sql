@@ -1,0 +1,1 @@
+ALTER TABLE applications ADD COLUMN status text NOT NULL DEFAULT 'Pending'
