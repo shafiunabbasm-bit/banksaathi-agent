@@ -1,0 +1,1 @@
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS nominee_name text; ALTER TABLE applications ADD COLUMN IF NOT EXISTS nominee_relation text; ALTER TABLE applications ADD COLUMN IF NOT EXISTS nominee_phone text; ALTER TABLE applications ADD COLUMN IF NOT EXISTS declaration boolean NOT NULL DEFAULT false;
