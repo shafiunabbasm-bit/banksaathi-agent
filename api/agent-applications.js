@@ -1,0 +1,3 @@
+import { db } from "hatchable";
+export const access="public"; export const methods=["GET"];
+export default async function(req,res){const q=new URL(req.url).searchParams;const agent=q.get("agent_id");if(!agent)return res.status(400).json({message:"agent_id required"});const x=await db.query("SELECT id,product,status,payment_status,created_at FROM applications WHERE agent_id=$1 ORDER BY created_at DESC LIMIT 100",[agent]);const rows=x.rows||[];res.json({total:rows.length,paid:rows.filter(r=>r.payment_status==="Paid").length,pending:rows.filter(r=>r.status==="Pending").length,applications:rows});}
