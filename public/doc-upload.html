@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Document Replacement</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f7f5;margin:0;padding:32px;color:#17351f}
+.wrap{max-width:760px;margin:auto;background:#fff;border-radius:16px;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+h1{margin-top:0}.row{border:1px solid #d9e4dc;border-radius:12px;padding:16px;margin:12px 0}
+button{background:#176b3a;color:#fff;border:0;border-radius:9px;padding:11px 18px;cursor:pointer}
+.status{margin-top:18px;white-space:pre-wrap}.note{font-size:13px;color:#617068}
+</style></head><body><div class="wrap">
+<h1>Replace / Add 6 PDFs</h1>
+<p class="note">Select all six PDFs you sent. Each file is stored under the document slot shown below.</p>
+<div class="row"><b>1. BankSathi Certificate</b><br><input id="bank" type="file" accept="application/pdf"></div>
+<div class="row"><b>2. m.Stock Certificate</b><br><input id="stock" type="file" accept="application/pdf"></div>
+<div class="row"><b>3. Udyam Registration Certificate</b><br><input id="udyam" type="file" accept="application/pdf"></div>
+<div class="row"><b>4. Razorpay Privacy Policy</b><br><input id="privacy" type="file" accept="application/pdf"></div>
+<div class="row"><b>5. Signed Document / Certificate</b><br><input id="signed" type="file" accept="application/pdf"></div>
+<div class="row"><b>6. Razorpay Terms of Use</b><br><input id="terms" type="file" accept="application/pdf"></div>
+<button id="go">Upload all 6 PDFs</button><div id="status" class="status"></div>
+</div>
+<script>
+const token="tKwtMH1qF93rpDsacpqo6N41nDlC7hG2";
+const api="/api/doc-upload";
+function b64(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(",")[1]);r.onerror=reject;r.readAsDataURL(file);});}
+async function send(file,name){
+ if(!file) throw new Error(name+": file not selected");
+ const data=await b64(file);
+ const r=await fetch(api,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,name,data})});
+ const j=await r.json(); if(!r.ok||!j.ok) throw new Error(j.error||"Upload failed");
+ return name+" uploaded ("+j.bytes+" bytes)";
+}
+document.getElementById("go").onclick=async()=>{
+ const s=document.getElementById("status"); s.textContent="Uploading..."; 
+ try{
+  const out=[];
+  out.push(await send(document.getElementById("bank").files[0],"banksathi-certificate.pdf"));
+  out.push(await send(document.getElementById("stock").files[0],"mstock-certificate.pdf"));
+  out.push(await send(document.getElementById("udyam").files[0],"udyam-certificate.pdf"));
+  out.push(await send(document.getElementById("privacy").files[0],"razorpay-privacy.pdf"));
+  out.push(await send(document.getElementById("signed").files[0],"signed-document.pdf"));
+  out.push(await send(document.getElementById("terms").files[0],"razorpay-terms.pdf"));
+  s.textContent=out.join("\n")+"\n\nAll six PDFs are uploaded. Keep this page open until verification is completed.";
+ }catch(e){s.textContent="ERROR: "+e.message;}
+};
+</script></body></html>
